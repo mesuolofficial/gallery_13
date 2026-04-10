@@ -2,131 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Aether Gallery | Clean, Cinematic, Easy to Use</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Hand of Cards | True Fan Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
-
         body {
-            background: #0b0e1a;
+            background: radial-gradient(circle at 30% 20%, #1a2a3a, #0a0f1a);
             font-family: 'Inter', sans-serif;
-            color: #fff;
-            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-
-        /* Particle canvas (subtle background) */
-        #particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .gallery-container {
             width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* Main content */
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
+            padding: 1rem;
+            position: relative;
         }
-
-        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
+            color: white;
         }
         .header h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #e0e0ff, #ffb3ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
         .header p {
-            color: #8e9aaf;
-            margin-top: 0.5rem;
+            color: #aab5c4;
+            font-size: 0.9rem;
         }
-
-        /* Masonry grid */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.8rem;
+        /* Hand area */
+        .hand {
+            position: relative;
+            height: 420px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 800px;
+            perspective-origin: 50% 100%;
         }
-
-        /* Card */
-        .album-card {
-            background: rgba(20, 28, 45, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1);
+        .card-fan {
+            position: relative;
+            width: 280px;
+            height: 360px;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-        .album-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 30px rgba(0,0,0,0.4);
-            border-color: rgba(0, 255, 255, 0.4);
-        }
-        .card-img {
+        /* Individual card */
+        .fan-card {
+            position: absolute;
             width: 100%;
-            aspect-ratio: 1 / 0.85;
-            object-fit: cover;
-            transition: transform 0.4s ease;
+            height: 100%;
+            background: rgba(20, 28, 45, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            transform-origin: bottom center;
         }
-        .album-card:hover .card-img {
-            transform: scale(1.02);
+        /* Each card's rotation and translation (set by JS) */
+        .fan-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
         }
         .card-info {
-            padding: 1.2rem;
+            padding: 1rem;
+            color: white;
         }
         .card-info h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
+            font-size: 1.2rem;
             margin-bottom: 0.3rem;
         }
         .card-info p {
-            font-size: 0.85rem;
-            color: #b0bedd;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 0.8rem;
             font-size: 0.75rem;
-            color: #8e9aaf;
+            opacity: 0.8;
         }
-        .photo-badge {
-            background: rgba(0, 255, 255, 0.15);
-            padding: 4px 10px;
+        .photo-count {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            background: rgba(0,255,255,0.2);
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 30px;
+        }
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .ctrl-btn {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: 0.5rem 1.2rem;
             border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-
-        /* Lightbox (full-screen, swipeable) */
+        .ctrl-btn:active {
+            transform: scale(0.95);
+        }
+        /* Lightbox */
         .lightbox {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.92);
+            background: rgba(0,0,0,0.95);
             backdrop-filter: blur(20px);
             z-index: 1000;
             display: flex;
@@ -134,7 +137,7 @@
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s;
+            transition: 0.3s;
         }
         .lightbox.active {
             opacity: 1;
@@ -142,26 +145,12 @@
         }
         .lightbox-content {
             max-width: 85vw;
-            max-height: 85vh;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            text-align: center;
         }
         .lightbox-content img {
             max-width: 100%;
-            max-height: 85vh;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        .lightbox-caption {
-            position: absolute;
-            bottom: -40px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: white;
-            font-size: 0.9rem;
+            max-height: 70vh;
+            border-radius: 24px;
         }
         .close-lb {
             position: absolute;
@@ -172,233 +161,231 @@
             border: none;
             color: white;
             cursor: pointer;
-            z-index: 1001;
         }
-        .lb-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            border: none;
-            color: white;
-            font-size: 2rem;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-radius: 60px;
-            transition: 0.2s;
+        @media (max-width: 700px) {
+            .hand { height: 350px; }
+            .card-fan { width: 220px; height: 290px; }
+            .fan-card img { height: 150px; }
+            .card-info h3 { font-size: 1rem; }
         }
-        .lb-nav:hover {
-            background: rgba(0,0,0,0.8);
-        }
-        .lb-prev { left: 20px; }
-        .lb-next { right: 20px; }
-        @media (max-width: 640px) {
-            .lb-nav { font-size: 1.2rem; padding: 0.3rem 0.8rem; }
-            .lb-prev { left: 10px; }
-            .lb-next { right: 10px; }
-        }
-
         footer {
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 2rem;
+            color: #7a879a;
             font-size: 0.7rem;
-            color: #5f6c84;
-        }
-
-        /* Scroll reveal animation */
-        .album-card {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .album-card.revealed {
-            opacity: 1;
-            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-<canvas id="particleCanvas"></canvas>
-
-<div class="container">
+<div class="gallery-container">
     <div class="header">
-        <h1><i class="fas fa-spa"></i> Aether Gallery</h1>
-        <p>Clean • Cinematic • Click any album to explore</p>
+        <h1><i class="fas fa-hand-peace"></i> Hand of Cards</h1>
+        <p>Realistic fan • Swipe to rotate • Click any card → it becomes the front</p>
     </div>
-
-    <div class="gallery-grid" id="galleryGrid"></div>
-    <footer>✨ Hover to lift • Click for full-screen lightbox • Swipe to browse</footer>
+    <div class="hand" id="handArea">
+        <div class="card-fan" id="cardFan"></div>
+    </div>
+    <div class="controls">
+        <button class="ctrl-btn" id="prevHandBtn"><i class="fas fa-chevron-left"></i> Prev</button>
+        <button class="ctrl-btn" id="nextHandBtn">Next <i class="fas fa-chevron-right"></i></button>
+    </div>
+    <footer>✨ Cards are angled like a real hand • Swipe left/right to rotate the fan</footer>
 </div>
 
 <div id="lightbox" class="lightbox">
-    <button class="close-lb" id="closeLbBtn">&times;</button>
-    <button class="lb-nav lb-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
-    <button class="lb-nav lb-next" id="lbNext"><i class="fas fa-chevron-right"></i></button>
+    <button class="close-lb" id="closeLb">&times;</button>
     <div class="lightbox-content">
         <img id="lbImage" src="" alt="">
-        <div class="lightbox-caption" id="lbCaption"></div>
+        <p id="lbCaption" style="color:white; margin-top:0.5rem;"></p>
     </div>
 </div>
 
 <script>
-    // Album data (each with cover + gallery)
+    // Album data
     const albums = [
-        { id:0, title:"Neon Dreams", desc:"Electric nights and retro-future vibes.", photos:42, cover:"https://picsum.photos/id/0/600/500", gallery:["https://picsum.photos/id/0/1200/800","https://picsum.photos/id/1/1200/800","https://picsum.photos/id/2/1200/800"] },
-        { id:1, title:"Mystic Peaks", desc:"Foggy mountains and eternal silence.", photos:38, cover:"https://picsum.photos/id/104/600/500", gallery:["https://picsum.photos/id/104/1200/800","https://picsum.photos/id/105/1200/800","https://picsum.photos/id/106/1200/800"] },
-        { id:2, title:"Retro Waves", desc:"Synthwave aesthetics and vintage cars.", photos:27, cover:"https://picsum.photos/id/111/600/500", gallery:["https://picsum.photos/id/111/1200/800","https://picsum.photos/id/112/1200/800","https://picsum.photos/id/113/1200/800"] },
-        { id:3, title:"Ocean Abyss", desc:"Bioluminescence and deep sea secrets.", photos:53, cover:"https://picsum.photos/id/15/600/500", gallery:["https://picsum.photos/id/15/1200/800","https://picsum.photos/id/16/1200/800","https://picsum.photos/id/17/1200/800"] },
-        { id:4, title:"Urban Mirage", desc:"Skyscrapers and neon haze.", photos:34, cover:"https://picsum.photos/id/20/600/500", gallery:["https://picsum.photos/id/20/1200/800","https://picsum.photos/id/21/1200/800","https://picsum.photos/id/22/1200/800"] },
-        { id:5, title:"Golden Eclipse", desc:"Solar flares and twilight magic.", photos:29, cover:"https://picsum.photos/id/10/600/500", gallery:["https://picsum.photos/id/10/1200/800","https://picsum.photos/id/11/1200/800","https://picsum.photos/id/12/1200/800"] },
-        { id:6, title:"Silent Woods", desc:"Ancient trees and dappled light.", photos:33, cover:"https://picsum.photos/id/96/600/500", gallery:["https://picsum.photos/id/96/1200/800","https://picsum.photos/id/97/1200/800","https://picsum.photos/id/98/1200/800"] }
+        { id:0, title:"Neon Dreams", desc:"Electric nights, retro-future vibes.", photos:42, cover:"https://picsum.photos/id/0/400/500", gallery:["https://picsum.photos/id/0/1000/700","https://picsum.photos/id/1/1000/700"] },
+        { id:1, title:"Mystic Peaks", desc:"Foggy mountains and eternal silence.", photos:38, cover:"https://picsum.photos/id/104/400/500", gallery:["https://picsum.photos/id/104/1000/700","https://picsum.photos/id/105/1000/700"] },
+        { id:2, title:"Retro Waves", desc:"Synthwave aesthetics, vintage cars.", photos:27, cover:"https://picsum.photos/id/111/400/500", gallery:["https://picsum.photos/id/111/1000/700","https://picsum.photos/id/112/1000/700"] },
+        { id:3, title:"Ocean Abyss", desc:"Bioluminescence and deep secrets.", photos:53, cover:"https://picsum.photos/id/15/400/500", gallery:["https://picsum.photos/id/15/1000/700","https://picsum.photos/id/16/1000/700"] },
+        { id:4, title:"Urban Mirage", desc:"Skyscrapers and neon haze.", photos:34, cover:"https://picsum.photos/id/20/400/500", gallery:["https://picsum.photos/id/20/1000/700","https://picsum.photos/id/21/1000/700"] },
+        { id:5, title:"Golden Eclipse", desc:"Solar flares and twilight magic.", photos:29, cover:"https://picsum.photos/id/10/400/500", gallery:["https://picsum.photos/id/10/1000/700","https://picsum.photos/id/11/1000/700"] },
+        { id:6, title:"Silent Woods", desc:"Ancient trees and dappled light.", photos:33, cover:"https://picsum.photos/id/96/400/500", gallery:["https://picsum.photos/id/96/1000/700","https://picsum.photos/id/97/1000/700"] }
     ];
 
-    const grid = document.getElementById('galleryGrid');
-    let currentLightboxAlbum = null;
-    let currentPhotoIndex = 0;
+    let currentCenterIndex = 3; // start with album at index 3 in center
+    const totalCards = albums.length;
+    const fanAngle = 35;   // total spread angle (degrees)
+    const maxOffset = 45;   // horizontal translation for outer cards (px)
+    
+    const fanContainer = document.getElementById('cardFan');
+    let cardsElements = [];
 
-    // Build grid
-    function buildGrid() {
-        grid.innerHTML = '';
-        albums.forEach((album, idx) => {
+    function buildFan() {
+        fanContainer.innerHTML = '';
+        cardsElements = [];
+        for (let i = 0; i < totalCards; i++) {
             const card = document.createElement('div');
-            card.className = 'album-card';
-            card.setAttribute('data-idx', idx);
+            card.className = 'fan-card';
+            const album = albums[i];
             card.innerHTML = `
-                <img class="card-img" src="${album.cover}" alt="${album.title}" loading="lazy">
+                <img src="${album.cover}" alt="${album.title}" loading="lazy">
                 <div class="card-info">
                     <h3>${escapeHtml(album.title)}</h3>
-                    <p>${escapeHtml(album.desc)}</p>
-                    <div class="meta">
-                        <span class="photo-badge"><i class="fas fa-camera"></i> ${album.photos}</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
+                    <p>${escapeHtml(album.desc.substring(0, 60))}…</p>
+                    <div class="photo-count"><i class="fas fa-camera"></i> ${album.photos}</div>
                 </div>
             `;
-            card.addEventListener('click', () => openLightbox(album));
-            grid.appendChild(card);
-        });
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // bring this card to the center
+                const newCenter = i;
+                rotateFanToCenter(newCenter);
+            });
+            fanContainer.appendChild(card);
+            cardsElements.push(card);
+        }
+        updateFanPositions();
     }
 
-    // Lightbox logic
+    function updateFanPositions() {
+        const centerIdx = currentCenterIndex;
+        const half = totalCards / 2;
+        for (let i = 0; i < totalCards; i++) {
+            const offset = i - centerIdx;
+            // angle: max ±fanAngle/2 at extremes, 0 at center
+            let angle = (offset / half) * (fanAngle / 2);
+            angle = Math.min(fanAngle/2, Math.max(-fanAngle/2, angle));
+            // horizontal translation: outer cards shift left/right
+            let translateX = (offset / half) * maxOffset;
+            // also slight vertical drop for realism
+            let translateY = Math.abs(offset) * 2;
+            // z-index: higher for center, lower for edges
+            const zIndex = 100 - Math.abs(offset);
+            // rotateY for perspective? but we use rotateZ for fan
+            const transform = `rotate(${angle}deg) translateX(${translateX}px) translateY(${translateY}px)`;
+            cardsElements[i].style.transform = transform;
+            cardsElements[i].style.zIndex = zIndex;
+            // also adjust opacity/blur for depth
+            const opacity = 1 - Math.abs(offset) * 0.12;
+            cardsElements[i].style.opacity = Math.max(0.4, opacity);
+            cardsElements[i].style.filter = `brightness(${1 - Math.abs(offset)*0.1})`;
+        }
+    }
+
+    function rotateFanToCenter(newCenterIdx) {
+        if (newCenterIdx < 0) newCenterIdx = 0;
+        if (newCenterIdx >= totalCards) newCenterIdx = totalCards - 1;
+        currentCenterIndex = newCenterIdx;
+        updateFanPositions();
+    }
+
+    function nextCard() {
+        rotateFanToCenter(currentCenterIndex + 1);
+    }
+    function prevCard() {
+        rotateFanToCenter(currentCenterIndex - 1);
+    }
+
+    // Swipe support on hand area
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const handArea = document.getElementById('handArea');
+    handArea.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    handArea.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        if (Math.abs(diff) > 40) {
+            if (diff > 0) prevCard();
+            else nextCard();
+        }
+    });
+    // Mouse drag (desktop) - simple left/right
+    let mouseDownX = 0;
+    let isDragging = false;
+    handArea.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        mouseDownX = e.clientX;
+        e.preventDefault();
+    });
+    window.addEventListener('mouseup', () => {
+        if (isDragging) isDragging = false;
+    });
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const diff = e.clientX - mouseDownX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) prevCard();
+            else nextCard();
+            isDragging = false;
+        }
+    });
+
+    // Buttons
+    document.getElementById('prevHandBtn').addEventListener('click', prevCard);
+    document.getElementById('nextHandBtn').addEventListener('click', nextCard);
+
+    // Lightbox: open when clicking the center card (or any card – but we open album of clicked)
+    // Actually each card click already calls rotateFanToCenter. We want double click? Better: on click, after rotate, if clicked again? 
+    // Simpler: long press or separate "view" button? But user said "click on any card to bring to front". Then to open lightbox, they can click the front card again.
+    // We'll implement: if you click a card that is already at center, open lightbox.
+    // Modify click handler: if the clicked card index equals currentCenterIndex, open lightbox.
+    // We need to store the card's album data. We'll attach event with album object.
+    function rebuildWithClickLogic() {
+        fanContainer.innerHTML = '';
+        cardsElements = [];
+        for (let i = 0; i < totalCards; i++) {
+            const card = document.createElement('div');
+            card.className = 'fan-card';
+            const album = albums[i];
+            card.innerHTML = `
+                <img src="${album.cover}" alt="${album.title}" loading="lazy">
+                <div class="card-info">
+                    <h3>${escapeHtml(album.title)}</h3>
+                    <p>${escapeHtml(album.desc.substring(0, 60))}…</p>
+                    <div class="photo-count"><i class="fas fa-camera"></i> ${album.photos}</div>
+                </div>
+            `;
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (i === currentCenterIndex) {
+                    openLightbox(album);
+                } else {
+                    rotateFanToCenter(i);
+                }
+            });
+            fanContainer.appendChild(card);
+            cardsElements.push(card);
+        }
+        updateFanPositions();
+    }
+
+    // Lightbox functions
     const lightbox = document.getElementById('lightbox');
     const lbImage = document.getElementById('lbImage');
     const lbCaption = document.getElementById('lbCaption');
-    const closeLb = document.getElementById('closeLbBtn');
-    const lbPrev = document.getElementById('lbPrev');
-    const lbNext = document.getElementById('lbNext');
-
+    const closeLb = document.getElementById('closeLb');
     function openLightbox(album) {
-        currentLightboxAlbum = album;
-        currentPhotoIndex = 0;
-        updateLightboxImage();
+        lbImage.src = album.gallery[0];
+        lbCaption.innerText = `${album.title} • ${album.photos} memories`;
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
-    }
-    function updateLightboxImage() {
-        lbImage.src = currentLightboxAlbum.gallery[currentPhotoIndex];
-        lbCaption.innerText = `${currentLightboxAlbum.title} – ${currentPhotoIndex+1} / ${currentLightboxAlbum.gallery.length}`;
-    }
-    function nextPhoto() {
-        currentPhotoIndex = (currentPhotoIndex + 1) % currentLightboxAlbum.gallery.length;
-        updateLightboxImage();
-    }
-    function prevPhoto() {
-        currentPhotoIndex = (currentPhotoIndex - 1 + currentLightboxAlbum.gallery.length) % currentLightboxAlbum.gallery.length;
-        updateLightboxImage();
     }
     function closeLightbox() {
         lightbox.classList.remove('active');
         document.body.style.overflow = '';
-        currentLightboxAlbum = null;
     }
     closeLb.addEventListener('click', closeLightbox);
-    lbPrev.addEventListener('click', prevPhoto);
-    lbNext.addEventListener('click', nextPhoto);
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
     });
-    // keyboard navigation
-    window.addEventListener('keydown', (e) => {
-        if (!lightbox.classList.contains('active')) return;
-        if (e.key === 'ArrowLeft') prevPhoto();
-        if (e.key === 'ArrowRight') nextPhoto();
-        if (e.key === 'Escape') closeLightbox();
-    });
-
-    // ---- Particle background (subtle) ----
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let mouseX = 0, mouseY = 0;
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = (Math.random() - 0.5) * 0.2;
-            this.speedY = (Math.random() - 0.5) * 0.2;
-            this.color = `rgba(100, 180, 255, ${Math.random() * 0.3 + 0.1})`;
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x < 0) this.x = canvas.width;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.y < 0) this.y = canvas.height;
-            if (this.y > canvas.height) this.y = 0;
-            // mouse repulsion
-            const dx = mouseX - this.x;
-            const dy = mouseY - this.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 100) {
-                const angle = Math.atan2(dy, dx);
-                const force = (100 - dist) / 100 * 0.3;
-                this.x -= Math.cos(angle) * force;
-                this.y -= Math.sin(angle) * force;
-            }
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        }
-    }
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 120; i++) particles.push(new Particle());
-    }
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animateParticles);
-    }
-    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
-    window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-    window.addEventListener('touchmove', (e) => { if (e.touches.length) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } });
-    resizeCanvas();
-    initParticles();
-    animateParticles();
-
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
-    }, { threshold: 0.1 });
-    function observeCards() {
-        document.querySelectorAll('.album-card').forEach(card => observer.observe(card));
-    }
 
     function escapeHtml(str) {
         return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
-    buildGrid();
-    observeCards();
+    rebuildWithClickLogic();
 </script>
 </body>
 </html>
